@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSetu – Formalising India's E-Waste Economy</title>
+  <meta name="description" content="EcoSetu connects kabadiwalas, certified recyclers & regulators through AI-powered e-waste classification and real-time tracking.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Light Theme Colors */
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      --green-50: #f0fdf4;
+      --green-100: #dcfce7;
+      --green-200: #bbf7d0;
+      --green-300: #86efac;
+      --green-400: #4ade80;
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --green-800: #166534;
+      --green-900: #14532d;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main);
+      /* Soft, minimal nature-green organic mesh gradient + large corner leaves */
+      background-image: 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg transform='rotate(45 100 100)'%3E%3Cpath d='M20,180 C20,80 120,20 180,20 C180,120 80,180 20,180 Z' fill='%2316a34a' opacity='0.04' /%3E%3Cpath d='M20,180 L180,20' stroke='%2316a34a' stroke-width='2' opacity='0.05' /%3E%3C/g%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg transform='rotate(225 100 100)'%3E%3Cpath d='M20,180 C20,80 120,20 180,20 C180,120 80,180 20,180 Z' fill='%2316a34a' opacity='0.04' /%3E%3Cpath d='M20,180 L180,20' stroke='%2316a34a' stroke-width='2' opacity='0.05' /%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(at 10% 20%, hsla(142, 71%, 45%, 0.12) 0px, transparent 60%),
+        radial-gradient(at 90% 80%, hsla(158, 64%, 40%, 0.12) 0px, transparent 60%);
+      background-position: top -100px left -100px, bottom -100px right -100px, top left, bottom right;
+      background-repeat: no-repeat;
+      background-size: 500px 500px, 500px 500px, 100vw 100vh, 100vw 100vh;
+      background-attachment: fixed;
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    .btn-icon {
+      width: 20px; height: 20px;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 clamp(20px, 4vw, 60px);
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-left img { width: 36px; height: 36px; border-radius: 10px; }
+    .nav-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; font-weight: 800;
+      color: var(--green-700);
+    }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: 14px; font-weight: 600; color: var(--text-muted);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green-600); }
+    
+    .nav-btns { display: flex; gap: 12px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600; text-decoration: none;
+      transition: all 0.2s; cursor: pointer; border: none;
+    }
+    .btn-app {
+      background: var(--green-600); color: white;
+    }
+    .btn-app:hover { background: var(--green-700); transform: translateY(-1px); }
+    .btn-dash {
+      background: white; color: var(--green-700);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .btn-dash:hover { border-color: var(--green-600); background: var(--green-50); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px clamp(20px, 5vw, 80px) 60px;
+      position: relative;
+    }
+    .hero-inner {
+      max-width: 1200px; width: 100%;
+      display: flex; align-items: center; gap: 60px;
+      position: relative; z-index: 1;
+    }
+    .hero-text { flex: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-100);
+      border: 1px solid var(--green-200);
+      padding: 6px 16px; border-radius: 999px;
+      font-size: 12px; font-weight: 700; color: var(--green-800);
+      letter-spacing: 0.5px; margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(38px, 5.5vw, 68px);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+      color: var(--text-main);
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--green-600), var(--green-500));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 1.8vw, 18px);
+      color: var(--text-muted); line-height: 1.7;
+      max-width: 500px; margin-bottom: 40px;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+    .btn-hero-app {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--green-600); color: white;
+      padding: 14px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-hero-app:hover { background: var(--green-700); transform: translateY(-2px); }
+    .btn-hero-dash {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: white; color: var(--green-700);
+      border: 1px solid var(--border-color);
+      padding: 14px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .btn-hero-dash:hover { border-color: var(--green-500); background: var(--green-50); transform: translateY(-2px); }
+
+    .team-label { font-size: 13px; color: var(--text-muted); }
+    .team-label strong { color: var(--green-700); font-weight: 700; }
+
+    /* Phone mockup (light styling) */
+    .hero-phone { flex-shrink: 0; position: relative; }
+    .phone-frame {
+      width: 310px; height: 630px;
+      background: #f1f5f9;
+      border-radius: 48px;
+      border: 8px solid #0f172a;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+      position: relative; overflow: hidden;
+    }
+    .phone-notch {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 100px; height: 26px;
+      background: #0f172a;
+      border-radius: 0 0 16px 16px;
+      z-index: 5;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      background: #000;
+    }
+    .phone-screen iframe { width: 100%; height: 100%; border: none; }
+
+    /* ── FEATURES ── */
+    .section {
+      padding: 100px clamp(20px, 5vw, 80px);
+      max-width: 1200px; margin: 0 auto;
+    }
+    .section-label {
+      font-size: 13px; font-weight: 800; color: var(--green-600);
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800; letter-spacing: -1px;
+      margin-bottom: 16px; color: var(--text-main);
+    }
+    .section-sub {
+      font-size: 17px; color: var(--text-muted);
+      max-width: 600px; line-height: 1.6;
+      margin-bottom: 60px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    }
+    .feature-card:hover {
+      border-color: var(--green-400);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
+    }
+    .fc-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .fc-icon svg { width: 32px; height: 32px; }
+    .fc-title {
+      font-size: 18px; font-weight: 700;
+      margin-bottom: 10px; color: var(--text-main);
+    }
+    .fc-desc {
+      font-size: 14.5px; color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps-row {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      counter-reset: step;
+    }
+    .step-card {
+      flex: 1; min-width: 240px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      counter-increment: step;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    }
+    .step-card::before {
+      content: "0" counter(step);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 56px; font-weight: 800;
+      color: rgba(22, 163, 74, 0.12); /* Subtle green to make it visible */
+      position: absolute; top: 16px; right: 24px;
+      z-index: 0;
+    }
+    .sc-icon { 
+      font-size: 32px; margin-bottom: 20px; 
+      position: relative; z-index: 1;
+    }
+    .sc-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; position: relative; z-index: 1; }
+    .sc-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; position: relative; z-index: 1; }
+
+    /* ── TECH STACK ── */
+    .tech-row {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tech-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 16px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    }
+    .tech-chip:hover {
+      border-color: var(--green-400);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+    .tc-icon { display: flex; align-items: center; justify-content: center; }
+    .tc-name { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .tc-desc { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 80px clamp(20px, 5vw, 80px) 120px;
+      text-align: center;
+    }
+    .cta-box {
+      max-width: 800px; margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 32px;
+      padding: 56px 40px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
+    }
+    .cta-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px; font-weight: 800;
+      margin-bottom: 16px; color: var(--text-main);
+    }
+    .cta-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.6; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-card);
+      padding: 40px clamp(20px, 5vw, 80px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-content { max-width: 1200px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    .footer-left { display: flex; align-items: center; gap: 12px; }
+    .footer-left img { width: 32px; height: 32px; border-radius: 8px; }
+    .footer-left span { font-size: 14px; font-weight: 500; color: var(--text-main); }
+    .footer-right { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+    @media (max-width: 900px) {
+      .hero-inner { flex-direction: column; text-align: center; }
+      .hero-sub { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-phone { margin-top: 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ NAVBAR ══════════ -->
+  <nav>
+    <div class="nav-left">
+      <img src="logo.png" alt="EcoSetu">
+      <span class="nav-brand">EcoSetu</span>
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it Works</a>
+      <a href="#tech">Tech Stack</a>
+      <a href="https://github.com/raunak-cybers/EcoSetu" target="_blank">GitHub</a>
+    </div>
+    <div class="nav-btns">
+      <a href="https://ecosetu-app.vercel.app/" target="_blank" class="btn btn-app">
+        <!-- Realistic App Icon -->
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="2" width="16" height="20" rx="3" fill="#1e1e24" />
+          <rect x="5" y="4" width="14" height="14" rx="1" fill="#0a0a0a" />
+          <path d="M5 4 h8 l-5 14 h-3z" fill="white" opacity="0.06" />
+          <rect x="10" y="19.5" width="4" height="1" rx="0.5" fill="#333" />
+        </svg>
+        Collector App
+      </a>
+      <a href="https://eco-setu-dashboard.vercel.app/" target="_blank" class="btn btn-dash">
+        <!-- Realistic Dashboard Icon -->
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="4" width="20" height="14" rx="2" fill="#334155" />
+          <rect x="3" y="5" width="18" height="12" rx="1" fill="#f8fafc" />
+          <rect x="3" y="5" width="18" height="3" fill="#e2e8f0" />
+          <circle cx="5" cy="6.5" r="1" fill="#ef4444" />
+          <circle cx="7.5" cy="6.5" r="1" fill="#f59e0b" />
+          <circle cx="10" cy="6.5" r="1" fill="#10b981" />
+          <rect x="6" y="12" width="3" height="4" rx="0.5" fill="#3b82f6" />
+          <rect x="10.5" y="10" width="3" height="6" rx="0.5" fill="#10b981" />
+          <rect x="15" y="13" width="3" height="3" rx="0.5" fill="#f59e0b" />
+        </svg>
+        Recycler Dashboard
+      </a>
+    </div>
+  </nav>
+
+  <!-- ══════════ HERO ══════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge">🏆 Smart India Hackathon 2026 – PS ID: SIH26229</div>
+        <h1 class="hero-title">
+          Formalising India's<br>
+          <span>E-Waste Economy</span>
+        </h1>
+        <p class="hero-sub">
+          A unified platform connecting kabadiwalas, certified recyclers, and regulatory bodies — powered by AI classification, real-time lot tracking, and transparent digital payments.
+        </p>
+        <div class="hero-actions">
+          <a href="https://ecosetu-app.vercel.app/" target="_blank" class="btn-hero-app">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="2" width="16" height="20" rx="3" fill="#1e1e24" />
+              <rect x="5" y="4" width="14" height="14" rx="1" fill="#0a0a0a" />
+              <path d="M5 4 h8 l-5 14 h-3z" fill="white" opacity="0.06" />
+              <rect x="10" y="19.5" width="4" height="1" rx="0.5" fill="#333" />
+            </svg>
+            Open Collector App
+          </a>
+          <a href="https://eco-setu-dashboard.vercel.app/" target="_blank" class="btn-hero-dash">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="4" width="20" height="14" rx="2" fill="#334155" />
+              <rect x="3" y="5" width="18" height="12" rx="1" fill="#f8fafc" />
+              <rect x="3" y="5" width="18" height="3" fill="#e2e8f0" />
+              <circle cx="5" cy="6.5" r="1" fill="#ef4444" />
+              <circle cx="7.5" cy="6.5" r="1" fill="#f59e0b" />
+              <circle cx="10" cy="6.5" r="1" fill="#10b981" />
+              <rect x="6" y="12" width="3" height="4" rx="0.5" fill="#3b82f6" />
+              <rect x="10.5" y="10" width="3" height="6" rx="0.5" fill="#10b981" />
+              <rect x="15" y="13" width="3" height="3" rx="0.5" fill="#f59e0b" />
+            </svg>
+            Open Recycler Dashboard
+          </a>
+        </div>
+        <p class="team-label">Built by <strong>Team EcoSetu</strong> · Flutter + React + Supabase + Gemini AI</p>
+      </div>
+
+      <div class="hero-phone">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <!-- ✏️ REPLACE: Replace 'dQw4w9WcXgQ' with your actual YouTube Short ID below -->
+            <iframe
+              src="https://www.youtube.com/embed/dQw4w9WcXgQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WcXgQ&controls=0&showinfo=0&rel=0&modestbranding=1"
+              allow="autoplay; encrypted-media"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ FEATURES ══════════ -->
+  <section class="section" id="features">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">Everything <span style="color: var(--green-600)">E-Waste</span> Needs</h2>
+    <p class="section-sub">From informal pickup to certified recycling — every step is tracked, transparent, and compliant.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="fc-icon">
+          <!-- AI Classification -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="8" width="16" height="12" rx="3" fill="#6366f1" />
+            <path d="M8 8V5a2 2 0 012-2h4a2 2 0 012 2v3" stroke="#818cf8" stroke-width="2" />
+            <circle cx="9" cy="14" r="1.5" fill="white" />
+            <circle cx="15" cy="14" r="1.5" fill="white" />
+            <path d="M10 18h4" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="fc-title">AI-Powered Classification</div>
+        <div class="fc-desc">Point your camera at any e-waste item. Gemini AI identifies the material type, estimates weight, and suggests fair pricing instantly.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">
+          <!-- Batch & Lot Management -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 3l9 4.5v9L12 21l-9-4.5v-9L12 3z" fill="#f59e0b" />
+            <path d="M12 12l9-4.5v-1" fill="#fbbf24" />
+            <path d="M12 12L3 7.5v1" fill="#fcd34d" />
+            <path d="M12 12v9" stroke="#d97706" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M12 12l9-4.5M12 12L3 7.5" stroke="#d97706" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="fc-title">Batch & Lot Management</div>
+        <div class="fc-desc">Collectors create batches of e-waste lots, each individually tracked with status, weight, condition, and value through the entire lifecycle.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">
+          <!-- Offline-First -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 1l22 22" />
+            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55" />
+            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39" />
+            <path d="M10.71 5.05A16 16 0 0 1 22.58 9" />
+            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88" />
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+            <line x1="12" y1="20" x2="12.01" y2="20" />
+          </svg>
+        </div>
+        <div class="fc-title">Offline-First & Real-Time Sync</div>
+        <div class="fc-desc">App works fully offline in remote areas for seamless pickups. Once connected, every lot and status change syncs live to the recycler dashboard.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">
+          <!-- Digital Audit Trail -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="2" width="16" height="20" rx="2" fill="#86efac" />
+            <path d="M8 8h8M8 12h8M8 16h4" stroke="#16a34a" stroke-width="2" stroke-linecap="round" />
+            <circle cx="16" cy="16" r="4" fill="#22c55e" />
+            <path d="M14.5 16l1 1 2-2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="fc-title">Digital Audit & Lot Trails</div>
+        <div class="fc-desc">Maintains verifiable records of all batches, materials, and transactions. Crucial for formal compliance and recycler audits.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">
+          <!-- Recycler Dashboard -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="14" width="4" height="7" rx="1" fill="#3b82f6" />
+            <rect x="10" y="8" width="4" height="13" rx="1" fill="#60a5fa" />
+            <rect x="17" y="3" width="4" height="18" rx="1" fill="#93c5fd" />
+            <path d="M3 21h18" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="fc-title">Recycler Dashboard</div>
+        <div class="fc-desc">A dedicated web dashboard to track incoming lots, quantify critical mineral recovery, enforce supply-chain traceability, and monitor formal compliance.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">
+          <!-- Multilingual & TTS -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" fill="#0ea5e9" />
+            <path d="M3.5 12h17 M12 3c-2.5 0-4.5 4-4.5 9s2 9 4.5 9 4.5-4 4.5-9-2-9-4.5-9z" stroke="white" stroke-width="1.5" />
+          </svg>
+        </div>
+        <div class="fc-title">Multilingual Support & TTS</div>
+        <div class="fc-desc">Full Hindi, Marathi, and English translations combined with built-in Text-To-Speech (TTS) ensures complete accessibility for all kabadiwalas.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ HOW IT WORKS ══════════ -->
+  <section class="section" id="how-it-works">
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">From <span style="color: var(--green-600)">Pickup</span> to <span style="color: var(--green-600)">Recycling</span></h2>
+    <p class="section-sub">A seamless 4-step flow that digitises the entire informal e-waste chain.</p>
+
+    <div class="steps-row">
+      <div class="step-card">
+        <div class="sc-icon">📸</div>
+        <div class="sc-title">Scan & Classify</div>
+        <div class="sc-desc">Kabadiwala scans e-waste using phone camera. AI identifies material (PCB, Battery, Cable, etc.) and suggests value.</div>
+      </div>
+      <div class="step-card">
+        <div class="sc-icon">📦</div>
+        <div class="sc-title">Create Lot</div>
+        <div class="sc-desc">Items are grouped into lots with declared weight, condition, and photos. Each lot gets a unique tracking ID.</div>
+      </div>
+      <div class="step-card">
+        <div class="sc-icon">🏭</div>
+        <div class="sc-title">Recycler Verifies</div>
+        <div class="sc-desc">Recycler receives the lot on their dashboard, inspects weight/material, accepts or flags variance.</div>
+      </div>
+      <div class="step-card">
+        <div class="sc-icon">💰</div>
+        <div class="sc-title">Instant Payment</div>
+        <div class="sc-desc">Once verified, payment is processed at CPCB-benchmarked rates. Full receipt and audit trail generated.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ TECH STACK ══════════ -->
+  <section class="section" id="tech" style="text-align: center;">
+    <p class="section-label">Tech Stack</p>
+    <h2 class="section-title">Built With <span style="color: var(--green-600)">Modern Tech</span></h2>
+    <p class="section-sub" style="margin-left: auto; margin-right: auto;">Production-grade technologies for reliability, speed, and scale.</p>
+
+    <div class="tech-row">
+      <div class="tech-chip">
+        <div class="tc-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.314 0L2.3 12L5.671 15.371L21.057 0H14.314ZM14.314 24H21.057L10.742 13.685L7.371 17.056L14.314 24Z" fill="#02569B"/><path d="M14.314 24H21.057L14.314 17.257L14.314 24Z" fill="#0175C2"/><path d="M10.742 13.685L14.314 10.114L21.057 10.114L10.742 13.685Z" fill="#39CEFD"/></svg>
+        </div>
+        <div style="text-align: left;"><div class="tc-name">Flutter</div><div class="tc-desc">Collector Mobile App</div></div>
+      </div>
+      <div class="tech-chip">
+        <div class="tc-icon">
+          <svg viewBox="-11.5 -10.23174 23 20.46348" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><circle cx="0" cy="0" r="2.05" fill="#61dafb"/><g stroke="#61dafb" stroke-width="1" fill="none"><ellipse rx="11" ry="4.2"/><ellipse rx="11" ry="4.2" transform="rotate(60)"/><ellipse rx="11" ry="4.2" transform="rotate(120)"/></g></svg>
+        </div>
+        <div style="text-align: left;"><div class="tc-name">React + TS</div><div class="tc-desc">Recycler Dashboard</div></div>
+      </div>
+      <div class="tech-chip">
+        <div class="tc-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.721 1.05041C12.1837 0.584346 11.3534 0.963473 11.3534 1.67499V9.7712H2.94632C2.08332 9.7712 1.58079 10.7431 2.07255 11.4552L11.279 22.9496C11.8163 23.4157 12.6466 23.0365 12.6466 22.325V14.2288H21.0537C21.9167 14.2288 22.4192 13.2569 21.9275 12.5448L12.721 1.05041Z" fill="#3ECF8E"/></svg>
+        </div>
+        <div style="text-align: left;"><div class="tc-name">Supabase</div><div class="tc-desc">Cloud Database & Auth</div></div>
+      </div>
+      <div class="tech-chip">
+        <div class="tc-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z" fill="url(#paint0_linear)"/><defs><linearGradient id="paint0_linear" x1="2.75" y1="2.75" x2="21.25" y2="21.25" gradientUnits="userSpaceOnUse"><stop stop-color="#1A73E8"/><stop offset="1" stop-color="#EA4335"/></linearGradient></defs></svg>
+        </div>
+        <div style="text-align: left;"><div class="tc-name">Gemini AI</div><div class="tc-desc">E-Waste Classification</div></div>
+      </div>
+      <div class="tech-chip">
+        <div class="tc-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L22 20H2L12 2Z" fill="#000000"/></svg>
+        </div>
+        <div style="text-align: left;"><div class="tc-name">Vercel</div><div class="tc-desc">Deployment & Hosting</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CTA ══════════ -->
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2 class="cta-title">Try the Live Demo</h2>
+      <p class="cta-sub">Experience the complete e-waste management flow — from the kabadiwala app to the recycler dashboard. Both are live and connected through Supabase in real-time.</p>
+      <div class="cta-btns">
+        <a href="https://ecosetu-app.vercel.app/" target="_blank" class="btn-hero-app">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="2" width="16" height="20" rx="3" fill="#1e1e24" />
+            <rect x="5" y="4" width="14" height="14" rx="1" fill="#0a0a0a" />
+            <path d="M5 4 h8 l-5 14 h-3z" fill="white" opacity="0.06" />
+            <rect x="10" y="19.5" width="4" height="1" rx="0.5" fill="#333" />
+          </svg>
+          Collector App
+        </a>
+        <a href="https://eco-setu-dashboard.vercel.app/" target="_blank" class="btn-hero-dash">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="4" width="20" height="14" rx="2" fill="#334155" />
+            <rect x="3" y="5" width="18" height="12" rx="1" fill="#f8fafc" />
+            <rect x="3" y="5" width="18" height="3" fill="#e2e8f0" />
+            <circle cx="5" cy="6.5" r="1" fill="#ef4444" />
+            <circle cx="7.5" cy="6.5" r="1" fill="#f59e0b" />
+            <circle cx="10" cy="6.5" r="1" fill="#10b981" />
+            <rect x="6" y="12" width="3" height="4" rx="0.5" fill="#3b82f6" />
+            <rect x="10.5" y="10" width="3" height="6" rx="0.5" fill="#10b981" />
+            <rect x="15" y="13" width="3" height="3" rx="0.5" fill="#f59e0b" />
+          </svg>
+          Recycler Dashboard
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-left">
+        <img src="logo.png" alt="EcoSetu">
+        <span>EcoSetu — Formalising India's E-Waste Economy</span>
+      </div>
+      <div class="footer-right">
+        Smart India Hackathon 2026 · PS ID: SIH26229
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

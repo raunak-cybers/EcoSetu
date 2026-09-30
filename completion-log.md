@@ -1,0 +1,10 @@
+- [x] Fix Flutter compilation bug due to `LotDetailsScreen` navigation routing args
+- [x] Relax Dashboard ID format validation to allow `LOT-` IDs (UUID not used, using app ID directly)
+- [x] Fix duplicate fake and real Lots by overwriting queue if Supabase has entries
+- [x] Add UPDATE payload subscription to Dashboard queue so re-requested/disputed lots resurface
+- [x] Sync `disputed` and `rejected` states perfectly in `lot_details_screen.dart` timeline logic
+- [x] Auto-generate `Payment` objects on the app side when dashboard approves payout
+- [x] Make `MyLotsScreen` and global `MainShell` actively listen and pull new lot status transitions 
+- [x] Sync manual user lot deletions on app down to Supabase's `lots` table
+- [x] Dynamic earnings math: Profile and Earnings screens now sum actual verified lot weights & payout lists!
+- [x] Added `audit_logs` tracking for all pickups, verifies, and payouts from both sides!

@@ -1,0 +1,10 @@
+'                        if (hasActiveDispute)\n'
+'                          Builder(builder: (ctx) {\n'
+'                            final String disputeText = AppLocalizations.of(context).language == AppLanguage.hi\n'
+"                                ? '\\ विवादित लॉट सक्रिय हैं'\n"
+'                                : AppLocalizations.of(context).language == AppLanguage.mr\n'
+"                                    ? '\\ विवादित लॉट सक्रिय आहेत'\n"
+"                                    : '\\ Disputed Lot\\ Active';\n"
+'                            return GestureDetector(\n'
+'                              onTap: () {\n'
+'                                try {\n'
